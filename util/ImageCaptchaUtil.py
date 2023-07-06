@@ -31,7 +31,7 @@ def extract_captcha_text(image_path):
 
         return ''.join(numeros)
     except Exception as ex:
-        logging.error(ex, 'get_captcha')
+        logging.error(ex, 'extract_captcha_text')
         raise Exception
 
 
@@ -41,5 +41,5 @@ def save_img(image, name, db_name, ext='.png'):
         with open("imgs/" + db_name + "/" + name + ext, 'wb')as f:
             f.write(image)
     except Exception as ex:
-        logging.error(ex, 'saveImg')
+        logging.error(ex, 'save_img')
         raise Exception
