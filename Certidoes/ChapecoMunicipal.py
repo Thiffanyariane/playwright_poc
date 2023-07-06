@@ -22,9 +22,9 @@ class ChapecoMunicipal:
                 page = await self.create_new_page(p)
                 await self.post_cnpj(page)
                 await self.get_captcha(page)
-                await self.gerar_nova_certidao(page)
-                await self.emitir_certidao(page)
-                status = self.verifica_status()
+                await self.generate_new_cnd(page)
+                await self.get_cnd(page)
+                status = self.check_status()
                 if status:
                     print('Positiva')
                 else:
@@ -58,7 +58,7 @@ class ChapecoMunicipal:
     async def get_captcha(self, page):
         try:
             screenshot = await (await page.query_selector('//*[@id="W0054vIMGCAPTCHA"]')).screenshot()
-            ImageCaptchaUtil.saveImg(screenshot, 'chapeco', self.db_name)
+            ImageCaptchaUtil.save_img(screenshot, 'chapeco', self.db_name)
             token = ImageCaptchaUtil.extract_captcha_text('imgs/demo/chapeco.png')
 
             if token is None or token == '' or not re.match(r'^\d{4}$', token):
@@ -72,7 +72,7 @@ class ChapecoMunicipal:
             logging.error(ex, 'get_captcha')
             raise Exception
 
-    async def gerar_nova_certidao(self, page):
+    async def generate_new_cnd(self, page):
         try:
             get_button = await page.query_selector('xpath=//*[@id="vGRIDGERAR_0001"]')
             await get_button.click()
@@ -82,10 +82,10 @@ class ChapecoMunicipal:
             await close_pop_up.click()
 
         except Exception as ex:
-            logging.error(ex, 'gerar_nova_certidao')
+            logging.error(ex, 'generate_new_cnd')
             raise Exception
 
-    async def emitir_certidao(self, page):
+    async def get_cnd(self, page):
         try:
             get_button = await page.query_selector('xpath=//*[@id="vGRIDIMPRIMIR_0001"]')
             await get_button.click()
@@ -94,10 +94,10 @@ class ChapecoMunicipal:
             pdf_path = self.empresa['cnpj'] + ".pdf"
             await new_page.pdf(path=pdf_path)
         except Exception as ex:
-            logging.error(ex, 'emitir_certidao')
+            logging.error(ex, 'get_cnd')
             raise Exception
 
-    def verifica_status(self):
+    def check_status(self):
         try:
             doc = fitz.open(self.empresa['cnpj'] + ".pdf")
             page = doc.load_page(0)
@@ -107,12 +107,12 @@ class ChapecoMunicipal:
             elif 'Negativa' in text:
                 return False
         except Exception as ex:
-            logging.error(ex, 'verifica_status')
+            logging.error(ex, 'check_status')
             raise Exception
 
     def get_date_validade(self):
         try:
-            validade = DateUtil.getDataValidadePdf(self.empresa['cnpj'] + ".pdf", 'Validade', 40)
+            validade = DateUtil.get_data_validade_pdf(self.empresa['cnpj'] + ".pdf", 'Validade', 40)
             return validade
         except Exception as ex:
             logging.error(ex, 'get_date_validade')

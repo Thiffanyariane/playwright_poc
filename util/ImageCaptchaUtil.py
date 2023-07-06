@@ -35,9 +35,9 @@ def extract_captcha_text(image_path):
         raise Exception
 
 
-def saveImg(image, name, db_name, ext='.png'):
+def save_img(image, name, db_name, ext='.png'):
     try:
-        DiretorioUtil.createDir(os.getcwd() + "/imgs/" + db_name)
+        DiretorioUtil.create_dir(os.getcwd() + "/imgs/" + db_name)
         with open("imgs/" + db_name + "/" + name + ext, 'wb')as f:
             f.write(image)
     except Exception as ex:

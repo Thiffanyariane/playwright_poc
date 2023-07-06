@@ -1,19 +1,19 @@
 import os
 
 
-def createDir(pasta):
+def create_dir(pasta):
     if not os.path.isdir(pasta):
         os.mkdir(pasta)
 
 
-def findUniqueFile(path):
+def find_unique_file(path):
     try:
         return os.listdir(path)[0]
-    except Exception as ex:
+    except:
         return ''
 
 
-def removeFile(path):
+def remove_file(path):
     try:
         os.remove(path)
         return True
